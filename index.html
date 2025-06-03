@@ -1,0 +1,214 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Череповецкий Лесомеханический Техникум</title>
+    <link rel="stylesheet" href="site.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('https://sun9-14.userapi.com/impf/c638917/v638917812/37fd4/RhLUHvy6XF0.jpg?size=604x453&quality=96&sign=4d63c90269a0a499a09728d5243f2578&type=album'); /* Замените на вашу ссылку */
+            background-size: cover;
+            background-position: center;
+            color: white;
+        }
+
+        header {
+            background-color: rgba(76, 175, 80, 0.7);
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        nav {
+            margin: 20px 0;
+        }
+
+            nav a {
+                margin: 0 15px;
+                text-decoration: none;
+                color: white;
+            }
+
+        section {
+            padding: 20px;
+            margin: 10px;
+            border-radius: 5px;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px 0;
+            background-color: rgba(76, 175, 80, 0.7);
+            color: white;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+            .schedule-table th, .schedule-table td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: center;
+            }
+
+            .schedule-table th {
+                background-color: rgba(76, 175, 80, 0.8);
+                color: white;
+            }
+
+        #filterInput {
+            margin-bottom: 20px;
+            padding: 10px;
+            width: calc(100% - 22px);
+        }
+
+        .form-container {
+            margin-top: 20px;
+        }
+
+            .form-container input {
+                margin-right: 10px;
+                padding: 5px;
+            }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Череповецкий Лесомеханический Техникум</h1>
+    </header>
+
+    <nav>
+        <a href="#about">О техникуме</a>
+        <a href="#search">Поиск по таблице</a>
+        <a href="#contact">Контакты</a>
+    </nav>
+
+    <section id="about">
+        <h2>О техникуме</h2>
+        <p>Череповецкий лесомеханический техникум имени В. П. Чкалова (ЧЛМТ) — учебное заведение, которое готовит специалистов в сфере программирования, электротехники, техники, технологии и лесного хозяйства.</p>
+        <p>Техникум предлагает разнообразные образовательные программы и активно сотрудничает с промышленностью.</p>
+    </section>
+
+    <section id="search">
+        <h2>Поиск по таблице</h2>
+        <input type="text" id="filterInput" placeholder="Поиск по таблице..." onkeyup="filterSchedule()">
+
+        <table class="schedule-table" id="scheduleTable">
+            <thead>
+                <tr>
+                    <th>Пара</th>
+                    <th>Группа</th>
+                    <th>Кабинет</th>
+                    <th>Преподаватель</th>
+                    <th>Предмет</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Сюда будут добавляться строки расписания -->
+            </tbody>
+        </table>
+
+        <div class="form-container">
+            <h3>Добавить/Редактировать занятие</h3>
+            <input type="number" id="classNumber" placeholder="Пара" required>
+            <input type="text" id="group" placeholder="Группа" required>
+            <input type="text" id="room" placeholder="Кабинет" required>
+            <input type="text" id="teacher" placeholder="Преподаватель" required>
+            <input type="text" id="subject" placeholder="Предмет" required>
+            <button onclick="addSchedule()">Добавить занятие</button>
+        </div>
+    </section>
+
+    <section id="contact">
+        <h2>Контакты</h2>
+        <p>Телефон: +7 (123) 456-78-90</p>
+        <p>Email: lesmeh.edu35.ru</p>
+        <p>Адрес: Череповец, ул. Труда, д. 1</p>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Череповецкий Лесомеханический Техникум. Все права защищены.</p>
+    </footer>
+
+    <script>
+function filterSchedule() {
+    const input = document.getElementById('filterInput');
+    const filter = input.value.toLowerCase();
+    const table = document.getElementById('scheduleTable');
+    const rows = table.getElementsByTagName('tr');
+
+    for (let i = 1; i < rows.length; i++) {
+        const cells = rows[i].getElementsByTagName('td');
+        let rowVisible = false;
+
+        for (let j = 0; j < cells.length; j++) {
+            if (cells[j].innerText.toLowerCase().includes(filter)) {
+                rowVisible = true;
+                break;
+            }
+        }
+
+        rows[i].style.display = rowVisible ? '' : 'none';
+    }
+}
+
+function addSchedule() {
+    const classNumber = document.getElementById('classNumber').value;
+    const group = document.getElementById('group').value;
+    const room = document.getElementById('room').value;
+    const teacher = document.getElementById('teacher').value;
+    const subject = document.getElementById('subject').value;
+
+    if (classNumber && group && room && teacher && subject) {
+        const table = document.getElementById('scheduleTable').getElementsByTagName('tbody')[0];
+
+        // Создаем новую строку
+        const newRow = table.insertRow();
+
+        newRow.insertCell(0).innerText = classNumber;
+        newRow.insertCell(1).innerText = group;
+        newRow.insertCell(2).innerText = room;
+        newRow.insertCell(3).innerText = teacher;
+        newRow.insertCell(4).innerText = subject;
+
+        // Добавляем кнопку для удаления
+        const removeCell = newRow.insertCell(5);
+        const removeButton = document.createElement('button');
+        removeButton.innerText = 'Убрать';
+        removeButton.onclick = function() { removeSchedule(newRow); };
+        removeCell.appendChild(removeButton);
+
+        // Очищаем поля ввода
+        clearInputFields();
+    } else {
+        alert("Пожалуйста, заполните все поля.");
+    }
+}
+
+function removeSchedule(row) {
+    row.parentNode.removeChild(row);
+}
+
+function clearInputFields() {
+    document.getElementById('classNumber').value = '';
+    document.getElementById('group').value = '';
+    document.getElementById('room').value = '';
+    document.getElementById('teacher').value = '';
+    document.getElementById('subject').value = '';
+}
+    </script>
+
+</body>
+</html> 
