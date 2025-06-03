@@ -10,7 +10,7 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-image: url('https://sun9-14.userapi.com/impf/c638917/v638917812/37fd4/RhLUHvy6XF0.jpg?size=604x453&quality=96&sign=4d63c90269a0a499a09728d5243f2578&type=album'); /* Замените на вашу ссылку */
+            background-image: url('https://sun9-14.userapi.com/impf/c638917/v638917812/37fd4/RhLUHvy6XF0.jpg?size=604x453&quality=96&sign=4d63c90269a0a499a09728d5243f2578&type=album'); 
             background-size: cover;
             background-position: center;
             color: white;
@@ -80,6 +80,11 @@
                 margin-right: 10px;
                 padding: 5px;
             }
+        #newsFilterInput {
+            margin-bottom: 20px;
+            padding: 10px;
+            width: calc(100% - 22px);
+        }
     </style>
 </head>
 <body>
@@ -90,7 +95,8 @@
 
     <nav>
         <a href="#about">О техникуме</a>
-        <a href="#search">Поиск по таблице</a>
+        <a href="#news">Новости</a>
+        <a href="#search">Поиск занятий</a>
         <a href="#contact">Контакты</a>
     </nav>
 
@@ -99,9 +105,34 @@
         <p>Череповецкий лесомеханический техникум имени В. П. Чкалова (ЧЛМТ) — учебное заведение, которое готовит специалистов в сфере программирования, электротехники, техники, технологии и лесного хозяйства.</p>
         <p>Техникум предлагает разнообразные образовательные программы и активно сотрудничает с промышленностью.</p>
     </section>
+    <section id="news">
+        <h2>Новости техникума</h2>
+        <input type="text" id="newsFilterInput" placeholder="Поиск по новостям..." onkeyup="filterNews()">
 
+        <table class="schedule-table" id="newsTable">
+            <thead>
+                <tr>
+                    <th>Дата</th>
+                    <th>Заголовок</th>
+                    <th>Описание</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Сюда будут добавляться новости -->
+            </tbody>
+        </table>
+
+        <div class="form-container">
+            <h3>Добавить новость</h3>
+            <input type="date" id="newsDate" required>
+            <input type="text" id="newsTitle" placeholder="Заголовок" required>
+            <input type="text" id="newsDescription" placeholder="Описание" required>
+            <button onclick="addNews()">Добавить новость</button>
+        </div>
+    </section>
     <section id="search">
-        <h2>Поиск по таблице</h2>
+        <h2>Поиск занятий</h2>
         <input type="text" id="filterInput" placeholder="Поиск по таблице..." onkeyup="filterSchedule()">
 
         <table class="schedule-table" id="scheduleTable">
@@ -143,71 +174,130 @@
     </footer>
 
     <script>
-function filterSchedule() {
-    const input = document.getElementById('filterInput');
-    const filter = input.value.toLowerCase();
-    const table = document.getElementById('scheduleTable');
-    const rows = table.getElementsByTagName('tr');
+        function filterSchedule() {
+            const input = document.getElementById('filterInput');
+            const filter = input.value.toLowerCase();
+            const table = document.getElementById('scheduleTable');
+            const rows = table.getElementsByTagName('tr');
 
-    for (let i = 1; i < rows.length; i++) {
-        const cells = rows[i].getElementsByTagName('td');
-        let rowVisible = false;
+            for (let i = 1; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName('td');
+                let rowVisible = false;
 
-        for (let j = 0; j < cells.length; j++) {
-            if (cells[j].innerText.toLowerCase().includes(filter)) {
-                rowVisible = true;
-                break;
+                for (let j = 0; j < cells.length; j++) {
+                    if (cells[j].innerText.toLowerCase().includes(filter)) {
+                        rowVisible = true;
+                        break;
+                    }
+                }
+
+                rows[i].style.display = rowVisible ? '' : 'none';
             }
         }
 
-        rows[i].style.display = rowVisible ? '' : 'none';
-    }
-}
+        function addSchedule() {
+            const classNumber = document.getElementById('classNumber').value;
+            const group = document.getElementById('group').value;
+            const room = document.getElementById('room').value;
+            const teacher = document.getElementById('teacher').value;
+            const subject = document.getElementById('subject').value;
 
-function addSchedule() {
-    const classNumber = document.getElementById('classNumber').value;
-    const group = document.getElementById('group').value;
-    const room = document.getElementById('room').value;
-    const teacher = document.getElementById('teacher').value;
-    const subject = document.getElementById('subject').value;
+            if (classNumber && group && room && teacher && subject) {
+                const table = document.getElementById('scheduleTable').getElementsByTagName('tbody')[0];
 
-    if (classNumber && group && room && teacher && subject) {
-        const table = document.getElementById('scheduleTable').getElementsByTagName('tbody')[0];
+                // Создаем новую строку
+                const newRow = table.insertRow();
 
-        // Создаем новую строку
-        const newRow = table.insertRow();
+                newRow.insertCell(0).innerText = classNumber;
+                newRow.insertCell(1).innerText = group;
+                newRow.insertCell(2).innerText = room;
+                newRow.insertCell(3).innerText = teacher;
+                newRow.insertCell(4).innerText = subject;
 
-        newRow.insertCell(0).innerText = classNumber;
-        newRow.insertCell(1).innerText = group;
-        newRow.insertCell(2).innerText = room;
-        newRow.insertCell(3).innerText = teacher;
-        newRow.insertCell(4).innerText = subject;
+                // Добавляем кнопку для удаления
+                const removeCell = newRow.insertCell(5);
+                const removeButton = document.createElement('button');
+                removeButton.innerText = 'Убрать';
+                removeButton.onclick = function () { removeSchedule(newRow); };
+                removeCell.appendChild(removeButton);
 
-        // Добавляем кнопку для удаления
-        const removeCell = newRow.insertCell(5);
-        const removeButton = document.createElement('button');
-        removeButton.innerText = 'Убрать';
-        removeButton.onclick = function() { removeSchedule(newRow); };
-        removeCell.appendChild(removeButton);
+                // Очищаем поля ввода
+                clearInputFields();
+            } else {
+                alert("Пожалуйста, заполните все поля.");
+            }
+        }
 
-        // Очищаем поля ввода
-        clearInputFields();
-    } else {
-        alert("Пожалуйста, заполните все поля.");
-    }
-}
+        function removeSchedule(row) {
+            row.parentNode.removeChild(row);
+        }
 
-function removeSchedule(row) {
-    row.parentNode.removeChild(row);
-}
+        function clearInputFields() {
+            document.getElementById('classNumber').value = '';
+            document.getElementById('group').value = '';
+            document.getElementById('room').value = '';
+            document.getElementById('teacher').value = '';
+            document.getElementById('subject').value = '';
+        }
+        function filterNews() {
+            const input = document.getElementById('newsFilterInput');
+            const filter = input.value.toLowerCase();
+            const table = document.getElementById('newsTable');
+            const rows = table.getElementsByTagName('tr');
 
-function clearInputFields() {
-    document.getElementById('classNumber').value = '';
-    document.getElementById('group').value = '';
-    document.getElementById('room').value = '';
-    document.getElementById('teacher').value = '';
-    document.getElementById('subject').value = '';
-}
+            for (let i = 1; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName('td');
+                let rowVisible = false;
+
+                for (let j = 0; j < cells.length - 1; j++) { // Последняя ячейка — действия
+                    if (cells[j].innerText.toLowerCase().includes(filter)) {
+                        rowVisible = true;
+                        break;
+                    }
+                }
+
+                rows[i].style.display = rowVisible ? '' : 'none';
+            }
+        }
+
+        function addNews() {
+            const date = document.getElementById('newsDate').value;
+            const title = document.getElementById('newsTitle').value;
+            const description = document.getElementById('newsDescription').value;
+
+            if (date && title && description) {
+                const table = document.getElementById('newsTable').getElementsByTagName('tbody')[0];
+
+                // Создаем новую строку
+                const newRow = table.insertRow();
+
+                newRow.insertCell(0).innerText = date;
+                newRow.insertCell(1).innerText = title;
+                newRow.insertCell(2).innerText = description;
+
+                // Добавляем кнопку для удаления
+                const removeCell = newRow.insertCell(3);
+                const removeButton = document.createElement('button');
+                removeButton.innerText = 'Убрать';
+                removeButton.onclick = function () { removeNews(newRow); };
+                removeCell.appendChild(removeButton);
+
+                // Очищаем поля ввода
+                clearNewsInputFields();
+            } else {
+                alert("Пожалуйста, заполните все поля для новости.");
+            }
+        }
+
+        function removeNews(row) {
+            row.parentNode.removeChild(row);
+        }
+
+        function clearNewsInputFields() {
+            document.getElementById('newsDate').value = '';
+            document.getElementById('newsTitle').value = '';
+            document.getElementById('newsDescription').value = '';
+        }
     </script>
 
 </body>
